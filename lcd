@@ -1,0 +1,45 @@
+// Step 1: Define LCD connections to PORTB
+sbit LCD_RS at RB4_bit;
+sbit LCD_EN at RB5_bit;
+sbit LCD_D7 at RB3_bit;
+sbit LCD_D6 at RB2_bit;
+sbit LCD_D5 at RB1_bit;
+sbit LCD_D4 at RB0_bit;
+
+// Pin direction
+sbit LCD_RS_Direction at TRISB4_bit;
+sbit LCD_EN_Direction at TRISB5_bit;
+sbit LCD_D7_Direction at TRISB3_bit;
+sbit LCD_D6_Direction at TRISB2_bit;
+sbit LCD_D5_Direction at TRISB1_bit;
+sbit LCD_D4_Direction at TRISB0_bit;
+// Step 2: Declare scrolling message
+char scrollText[] = " Hello World "; // padded string
+char display[17]; // 16 characters + null terminator
+unsigned short i, j;
+// Step 3: Delay function
+void Move_Delay() {
+ Delay_ms(300); // adjust for speed
+}
+// Step 4: Main function
+void main() {
+   CCP1CON = 0x00;
+   T1CON = 0x00;
+   VRCON = 0x00;
+   INTCON = 0x00;
+   CMCON = 0x07;
+   Lcd_Init(); // Initialize LCD
+   Lcd_Cmd(_LCD_CLEAR); // Clear display
+   Lcd_Cmd(_LCD_CURSOR_OFF); // Hide cursor
+   Lcd_Out(1,6, scrollText);
+   while(1) {
+     for(i = 0; i < 26; i++) { // 42 total chars - 16 visible + 1
+       for(j = 0; j < 16; j++) {
+             display[j] = scrollText[i + j]; // Copy 16 chars from scrollText
+       }
+       display[16] = '\0'; // Null-terminate string
+       Lcd_Out(1, 1, display); // Print on first row
+       Move_Delay();
+     }
+   }
+}
