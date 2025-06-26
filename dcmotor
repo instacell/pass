@@ -1,0 +1,36 @@
+// L293D module
+// Step 1: Define pin assignments for motor control
+sbit Forward at RA0_bit;
+sbit Reverse at RA1_bit;
+sbit Brake at RA2_bit;
+
+void main() {
+    // Step 2: Initialize configuration settings
+    CMCON = 0x07;      // Disable comparators
+    TRISA = 0x07;      // RA0, RA1, RA2 as input; others as output
+    TRISB = 0x00;      // All PORTB pins as output
+    PORTB = 0x00;      // Initialize PORTB to 0
+
+    // Step 3: Define the infinite loop
+    while(1) {
+        // Step 4: Handling “Forward” Condition
+        if (!Forward) {
+            PORTB = 0x00;     // Clear all outputs first
+            RB0_bit = 1;      // Enable Motor (EN1)
+            RB1_bit = 1;      // IN1 High
+            RB2_bit = 0;      // IN2 Low
+        }
+        // Step 5: Handling “Reverse” Condition
+        else if (!Reverse) {
+            PORTB = 0x00;
+            RB0_bit = 1;      // Enable Motor (EN1)
+            RB1_bit = 0;      // IN1 Low
+            RB2_bit = 1;      // IN2 High
+        }
+        // Step 6: Handling “Brake” Condition
+        else if (!Brake) {
+            // Step 7: Perform actions for braking
+            PORTB = 0x00;     // Motor stopped (brake)
+        }
+    }
+}
