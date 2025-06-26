@@ -1,0 +1,34 @@
+// Step 1: Declare a constant array
+const unsigned char numbers[10] = {0x3F, 0b00000110, 0x5B, 0x4F, 0x66,
+                                   0x6D, 0x7D, 0x07, 0x7F, 0x6F};
+// Each value represents the segment code for numbers 0-9 (Common Cathode)
+
+// Step 2: Global variables declaration
+int stop = 0;   // Initialize to zero
+int count = 0;  // Initialize to zero
+
+// Step 3: Declare the main function
+void main() {
+    // Step 4: Initialize configuration settings
+    TRISA = 0x01;   // RA0 as input, others as output
+    TRISB = 0x80;   // RB7 as input, others as output
+    PORTA = 0x00;   // All PORTA pins low
+    PORTB = 0x00;   // All PORTB pins low
+
+    // Step 5: Define the infinite loop
+    while (1) {
+        // Step 6: Condition checking and display logic
+        if (PORTB.RB7 == 1 && stop == 0) {  // Check if button is pressed and not already counted
+            count++;                      // Increment count
+            if (count == 10) {            // Handle overflow
+                count = 0;                // Reset count
+            }
+            PORTB = numbers[count];       // Display number on 7-segment
+            stop = 1;                     // Wait for button release
+            Delay_ms(10);                 // Debounce delay
+        }
+        else if (PORTB.F7 == 0) {         // Button released
+            stop = 0;                     // Ready to detect next press
+        }
+    }
+}
