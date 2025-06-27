@@ -1,0 +1,21 @@
+sbit sw1 at RB0_bit;
+
+int state = 0;
+int last_state = 1;
+
+void main() {
+ TRISB =0b00000001; //Hint: Set RB0 as input, RB1 as output
+ PORTB =0b00000000; // Hint: Initialize PORTB
+ while (1) {
+
+ if (sw1 == 1 && last_state == 1) {
+  last_state = 0; //Hint:Button is pressed
+  state =! state; //Hint:Toggle state
+  RB1_bit = state; //Hint:Output
+   Delay_ms(50); //Hint:Bounce delay
+ }
+
+ else if(sw1 == 0){ //Hint:Button Released
+ last_state = 1;} //Hint:Reset Pre state
+ }
+}
